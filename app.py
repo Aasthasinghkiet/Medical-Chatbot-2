@@ -4,8 +4,6 @@ from langchain_pinecone import PineconeVectorStore
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough, RunnableLambda
-from dotenv import load_dotenv
-from src.prompt import *
 import os
 import traceback
 
@@ -16,12 +14,17 @@ st.set_page_config(
     layout="centered"
 )
 
-# ------------------ Load Environment Variables ------------------ #
-load_dotenv()
-
-# Set API keys
-os.environ["PINECONE_API_KEY"] = os.getenv("PINECONE_API_KEY", "pcsk_3NsC4G_32anrTFjdL9j8bL8aBtY2BqHC4SKxz8VpB3qxZmAQFyFUzinuEXvumAKyUoF4wU")
-os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY", "AIzaSyDmsvsNHvBTICgEZ5O8elaxZtAHKhv210U")
+# ------------------ Load API Keys from Streamlit Secrets ------------------ #
+try:
+    # For Streamlit Cloud (uses st.secrets)
+    os.environ["PINECONE_API_KEY"] = st.secrets["PINECONE_API_KEY"]
+    os.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
+except:
+    # For local development (uses .env file)
+    from dotenv import load_dotenv
+    load_dotenv()
+    os.environ["PINECONE_API_KEY"] = os.getenv("PINECONE_API_KEY", "")
+    os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY", "")
 
 # ------------------ Initialize Components (Cached) ------------------ #
 @st.cache_resource
