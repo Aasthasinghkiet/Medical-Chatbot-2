@@ -16,15 +16,11 @@ st.set_page_config(
 
 # ------------------ Load API Keys from Streamlit Secrets ------------------ #
 try:
-    # For Streamlit Cloud (uses st.secrets)
     os.environ["PINECONE_API_KEY"] = st.secrets["PINECONE_API_KEY"]
     os.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
-except:
-    # For local development (uses .env file)
-    from dotenv import load_dotenv
-    load_dotenv()
-    os.environ["PINECONE_API_KEY"] = os.getenv("PINECONE_API_KEY", "")
-    os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY", "")
+except Exception as e:
+    st.error("⚠️ Please configure your API keys in Streamlit Cloud secrets!")
+    st.stop()
 
 # ------------------ Initialize Components (Cached) ------------------ #
 @st.cache_resource
@@ -46,7 +42,7 @@ def initialize_chatbot():
         
         # Gemini Model
         chatModel = ChatGoogleGenerativeAI(
-            model="gemini-2.5-pro",
+            model="gemini-1.5-pro",  # Changed to stable version
             google_api_key=os.environ["GOOGLE_API_KEY"],
             temperature=0.2
         )
@@ -113,7 +109,8 @@ st.title("🏥 Medical Chatbot")
 st.markdown("Ask me any medical question and I'll help you with information from medical resources.")
 
 # Initialize chatbot
-rag_chain = initialize_chatbot()
+with st.spinner("🔄 Loading chatbot..."):
+    rag_chain = initialize_chatbot()
 
 if rag_chain is None:
     st.error("Failed to initialize chatbot. Please check your API keys and configuration.")
@@ -171,7 +168,7 @@ with st.sidebar:
     st.header("ℹ️ About")
     st.markdown("""
     This is a medical chatbot powered by:
-    - 🤖 Google Gemini 2.5 Pro
+    - 🤖 Google Gemini Pro
     - 📚 Pinecone Vector Database
     - 🔍 RAG (Retrieval Augmented Generation)
     
