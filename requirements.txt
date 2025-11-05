@@ -1,12 +1,17 @@
 streamlit
-langchain==0.1.0
-langchain-community==0.0.20
-langchain-google-genai==0.0.6
-langchain-pinecone==0.0.1
-langchain-core==0.1.23
-pinecone-client==3.0.0
-sentence-transformers==2.3.1
-python-dotenv==1.0.0
-google-generativeai==0.3.2
-torch
-torchvision
+langchain
+langchain-community
+langchain-google-genai
+langchain-pinecone
+langchain-core
+pinecone-client
+sentence-transformers
+python-dotenv
+google-generativeai
+```
+
+## Files you need in your GitHub repo:
+
+### 1. `.python-version`
+```
+3.11
